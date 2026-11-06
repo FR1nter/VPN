@@ -5,520 +5,188 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>FRINTER</title>
     <style>
-        /* Переменные для быстрой смены темы */
-        :root {
-            --bg-animation-light: linear-gradient(45deg, #ffffff, #f0f0f0, #e0e0e0, #f5f5f5, #ffffff);
-            --bg-animation-dark: linear-gradient(45deg, #0a0a0a, #1a1a1a, #262626, #141414, #0a0a0a);
-            --text-color: #ffffff;
-            --border-color: #ffffff;
-            --card-bg: rgba(255, 255, 255, 0.04);
-            --btn-bg: #ffffff;
-            --btn-text: #000000;
-            --matrix-color: rgba(255, 255, 255, 0.12);
-            --toast-bg: rgba(255, 255, 255, 0.95);
-            --toast-text: #000000;
-        }
-
-        [data-theme="light"] {
-            --text-color: #000000;
-            --border-color: #000000;
-            --card-bg: rgba(0, 0, 0, 0.04);
-            --btn-bg: #000000;
-            --btn-text: #ffffff;
-            --matrix-color: rgba(0, 0, 0, 0.08);
-            --toast-bg: rgba(0, 0, 0, 0.9);
-            --toast-text: #ffffff;
-        }
-
-        /* Общие стили и анимация фона */
         body {
+            background-color: #0b0f19;
+            color: #ffffff;
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
             margin: 0;
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            color: var(--text-color);
+            padding: 0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
             min-height: 100vh;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            justify-content: flex-start;
-            padding: 20px;
-            box-sizing: border-box;
-            background: var(--bg-animation-dark);
-            background-size: 600% 600%;
-            animation: blanketWave 18s ease-in-out infinite;
-            transition: color 0.5s ease;
-            overflow-x: hidden;
-            position: relative;
         }
 
-        [data-theme="light"] body {
-            background: var(--bg-animation-light);
-            background-size: 600% 600%;
-            animation: blanketWave 18s ease-in-out infinite;
-        }
-
-        /* Холст двоичного кода на весь экран */
-        #matrixCanvas {
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100vw;
-            height: 100vh;
-            z-index: 0;
-            pointer-events: none;
-        }
-
-        /* Контейнер для контента поверх матрицы */
-        .wrapper {
-            position: relative;
-            z-index: 1;
-            width: 100%;
-            max-width: 420px;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            min-height: auto;
-        }
-
-        @keyframes blanketWave {
-            0% { background-position: 0% 50%; }
-            50% { background-position: 100% 50%; }
-            100% { background-position: 0% 50%; }
-        }
-
-        /* Эффект плавного появления элементов сверху вниз */
-        .fade-item {
-            opacity: 0;
-            animation: fadeInUp 0.8s cubic-bezier(0.25, 1, 0.5, 1) forwards;
-        }
-
-        @keyframes fadeInUp {
-            from {
-                opacity: 0;
-                transform: translateY(15px);
-            }
-            to {
-                opacity: 1;
-                transform: translateY(0);
-            }
-        }
-
-        /* Задержки для создания каскадного появления */
-        .delay-1 { animation-delay: 0.1s; }
-        .delay-2 { animation-delay: 0.3s; }
-        .delay-3 { animation-delay: 0.5s; }
-
-        /* Кнопка на весь экран в левом верхнем углу (символ рамки ⛶) */
-        .fullscreen-toggle {
-            position: absolute;
-            top: 20px;
-            left: 20px;
-            background: transparent;
-            border: 2px solid var(--border-color);
-            color: var(--text-color);
-            padding: 8px 14px;
-            border-radius: 20px;
-            cursor: pointer;
-            font-size: 1.1rem;
-            font-weight: bold;
-            transition: all 0.3s ease;
-            z-index: 10;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-        }
-        .fullscreen-toggle:hover {
-            background: var(--text-color);
-            color: var(--btn-text);
-            transform: scale(1.05);
-        }
-
-        /* Кнопка переключения темы в правом верхнем углу */
-        .theme-toggle {
-            position: absolute;
-            top: 20px;
-            right: 20px;
-            background: transparent;
-            border: 2px solid var(--border-color);
-            color: var(--text-color);
-            padding: 8px 16px;
-            border-radius: 20px;
-            cursor: pointer;
-            font-weight: bold;
-            transition: all 0.3s ease;
-            z-index: 10;
-        }
-        .theme-toggle:hover {
-            background: var(--text-color);
-            color: var(--btn-text);
-        }
-
-        /* Шапка с отступом */
-        header {
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            gap: 20px; 
-            padding-top: 160px; 
-            margin-bottom: 20px;
-            flex-shrink: 0;
-        }
-
-        .logo {
-            font-size: 2.8rem;
-            font-weight: 900;
-            letter-spacing: 5px;
-            margin: 0;
-            line-height: 1;
-        }
-
-        .lightning {
-            font-size: 2.3rem;
-            filter: grayscale(100%);
-            line-height: 1;
-        }
-
-        /* Блок контента */
-        main {
-            width: 100%;
-            margin-top: 5px; 
-            display: flex;
-            flex-direction: column;
-            justify-content: flex-start;
-        }
-
-        /* Стили для компактной рамки */
-        .card {
-            border: 2px solid var(--border-color);
-            border-radius: 20px;
-            padding: 25px;
+        .container {
             text-align: center;
-            background-color: var(--card-bg);
-            backdrop-filter: blur(5px);
-            transition: border-color 0.5s ease, background-color 0.5s ease, box-shadow 0.3s ease;
-            cursor: pointer;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            justify-content: center;
-            min-height: 185px; 
-            box-sizing: border-box;
+            padding: 20px;
+            max-width: 440px;
+            width: 100%;
         }
 
-        .card.animating-border {
-            animation: greyBorderGlow 4s ease-in-out;
-        }
-
-        @keyframes greyBorderGlow {
-            0% { border-color: var(--border-color); }
-            25% { border-color: #b3b3b3; }
-            50% { border-color: #555555; }
-            75% { border-color: #888888; }
-            100% { border-color: var(--border-color); }
-        }
-
-        .card h2 {
-            margin: 0 0 12px 0;
-            font-size: 1.3rem;
-            font-weight: 600;
-            pointer-events: none;
-        }
-
-        .arrow {
-            font-size: 1.3rem;
-            display: block;
-            margin-bottom: 12px;
-            pointer-events: none;
-        }
-
-        /* Кнопка копирования */
-        .copy-btn {
-            background-color: var(--btn-bg);
-            color: var(--btn-text);
-            border: none;
-            padding: 11px 24px;
-            font-size: 1rem;
+        .header {
+            font-size: 24px;
             font-weight: bold;
-            border-radius: 25px;
+            letter-spacing: 2px;
+            margin-bottom: 30px;
+        }
+
+        /* Контейнер для уведомлений (изначально скрыты и прозрачны) */
+        .alert-box {
+            display: none;
+            opacity: 0;
+            background-color: rgba(16, 185, 129, 0.2);
+            border: 1px solid #10b981;
+            border-radius: 8px;
+            padding: 12px;
+            margin-bottom: 20px;
+            font-size: 14px;
+            transition: opacity 0.3s ease;
+        }
+
+        .theme-btn {
+            background: none;
+            border: 1px solid #374151;
+            color: #9ca3af;
+            padding: 8px 16px;
+            border-radius: 6px;
             cursor: pointer;
-            transition: transform 0.2s ease, background-color 0.5s ease, color 0.5s ease;
-            width: 80%;
-            max-width: 280px;
+            font-size: 14px;
+            margin-bottom: 40px;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .subscription-box {
+            background-color: #1f2937;
+            border-radius: 12px;
+            padding: 24px;
+            border: 1px solid #374151;
+        }
+
+        .sub-title {
+            color: #9ca3af;
+            text-transform: uppercase;
+            font-size: 12px;
+            letter-spacing: 1px;
+            margin-bottom: 16px;
+        }
+
+        /* Кнопки в один ряд */
+        .buttons-row {
+            display: flex;
+            gap: 12px;
+            margin-bottom: 16px;
+        }
+
+        .copy-btn {
+            background-color: #3b82f6;
+            color: white;
+            border: none;
+            padding: 12px 16px;
+            border-radius: 8px;
+            font-size: 15px;
+            font-weight: 500;
+            cursor: pointer;
+            flex: 1;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 8px;
+            transition: background-color 0.2s;
         }
 
         .copy-btn:hover {
-            opacity: 0.9;
+            background-color: #2563eb;
         }
 
-        .copy-btn:active {
-            transform: scale(0.95);
-        }
-
-        /* Всплывающее окно (Toast) */
-        .toast {
-            position: fixed;
-            bottom: -100px;
-            left: 50%;
-            transform: translateX(-50%);
-            background-color: var(--toast-bg);
-            color: var(--toast-text);
-            padding: 16px 24px;
-            border-radius: 16px;
-            font-size: 0.95rem;
-            font-weight: 600;
-            box-shadow: 0 10px 30px rgba(0,0,0,0.3);
-            z-index: 100;
-            transition: bottom 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275), opacity 0.4s ease;
-            opacity: 0;
-            text-align: center;
-            width: 85%;
-            max-width: 400px;
-            pointer-events: none;
-        }
-
-        .toast.show {
-            bottom: 40px;
-            opacity: 1;
-        }
-
-        /* Подвал аккуратно отодвинут подальше вниз от рамки */
-        footer {
-            margin-top: 32px; 
-            padding-bottom: 20px; 
-            text-align: center;
-            flex-shrink: 0;
-            width: 100%;
-        }
-
-        .footer-link {
-            display: inline-flex;
-            align-items: center;
-            justify-content: center;
-            gap: 10px;
-            font-size: 1.1rem;
-            font-weight: 700;
-            letter-spacing: 4px;
-            opacity: 0.25;
-            color: var(--text-color);
-            text-decoration: none;
-            transition: opacity 0.3s ease, color 0.5s ease;
-            user-select: none;
-        }
-
-        .footer-link:hover {
-            opacity: 0.7;
-        }
-
-        .tg-icon {
-            width: 22px;
-            height: 22px;
-            fill: #0088cc;
-        }
-
-        /* Адаптивность под ПК */
-        @media (min-width: 768px) {
-            .wrapper {
-                max-width: 550px;
-            }
-            header {
-                padding-top: 180px; 
-                gap: 25px;
-            }
-            .logo {
-                font-size: 4.2rem;
-                letter-spacing: 7px;
-            }
-            .lightning {
-                font-size: 3.5rem;
-            }
-            main {
-                margin-top: 10px;
-            }
-            .card {
-                padding: 35px;
-                border-radius: 24px;
-                min-height: 230px; 
-            }
-            .card h2 {
-                font-size: 1.6rem;
-                margin-bottom: 20px;
-            }
-            .arrow {
-                font-size: 1.6rem;
-                margin-bottom: 20px;
-            }
-            .copy-btn {
-                padding: 14px 28px;
-                font-size: 1.1rem;
-                max-width: 300px;
-            }
-            .footer-link {
-                font-size: 1.3rem;
-                gap: 12px;
-            }
-            .tg-icon {
-                width: 26px;
-                height: 26px;
-            }
-            .toast {
-                font-size: 1.05rem;
-            }
+        .footer-logo {
+            font-weight: bold;
+            font-size: 18px;
+            color: #4b5563;
+            letter-spacing: 1px;
         }
     </style>
-    <script>
-        // Скрипт выполняется мгновенно до рендеринга страницы во избежание мерцания белого цвета
-        (function () {
-            const savedTheme = localStorage.getItem('theme');
-            if (savedTheme === 'light') {
-                document.documentElement.setAttribute('data-theme', 'light');
-            }
-        })();
-    </script>
 </head>
 <body>
 
-    <canvas id="matrixCanvas"></canvas>
+    <div class="container">
+        <div class="header">FRINTER</div>
 
-    <div class="toast" id="toastNotification">
-        Подписка скопирована ✅. Добавьте её в VPN-клиент — Happ.
-    </div>
+        <!-- Окна уведомлений -->
+        <div id="alert-happ" class="alert-box">
+            Подписка скопирована ✅. Добавьте её в VPN-клиент — Happ.
+        </div>
+        <div id="alert-incy" class="alert-box">
+            Подписка скопирована ✅. Добавьте её в incy.
+        </div>
 
-    <div class="wrapper">
-        <button class="fullscreen-toggle" id="fullscreenToggle" title="На весь экран">⛶</button>
-        <button class="theme-toggle" id="themeToggle">Сменить тему</button>
+        <button class="theme-btn">
+            ⛶ Сменить тему
+        </button>
 
-        <header class="fade-item delay-1">
-            <div class="logo">FRINTER</div>
-            <div class="lightning">⚡</div>
-        </header>
-
-        <main class="fade-item delay-2">
-            <div class="card" id="mainCard">
-                <h2>Ваша подписка</h2>
-                <span class="arrow">⬇</span>
-                <button class="copy-btn" id="copyBtn">Скопировать</button>
+        <div class="subscription-box">
+            <div class="sub-title">⚡ ваша подписка</div>
+            
+            <div class="buttons-row">
+                <button id="btn-happ" class="copy-btn">
+                    ⬇ скопировать Happ
+                </button>
+                <button id="btn-incy" class="copy-btn">
+                    ⬇ скопировать Incy
+                </button>
             </div>
-        </main>
 
-        <footer class="fade-item delay-3">
-            <a href="https://t.me/FR1nter" target="_blank" class="footer-link">
-                <svg class="tg-icon" viewBox="0 0 24 24">
-                    <path d="M21.94 5.65c-.17-.3-.48-.5-.83-.53l-18-1.5c-.44-.04-.85.19-1.02.6-.17.41-.05.88.29 1.17l4.5 3.9c.2.17.47.24.73.18l4.47-1.03-3.12 3.93c-.15.19-.2.44-.15.68l1.5 6.5c.08.36.35.65.71.74.07.02.14.03.21.03.29 0 .57-.13.75-.36l4.2-5.4 4.14 3.03c.23.17.52.22.79.13.27-.09.48-.3.56-.57l3.5-12c.11-.38-.01-.79-.25-1.02zm-14.3 2.87l-2.48-2.15 13.04.14-10.56 2.01zm6.05 4.3l-2.07 2.61-.48-2.08 2.55-.53z"/>
-                </svg>
-                FRINTER
-            </a>
-        </footer>
+            <div class="footer-logo">FRINTER</div>
+        </div>
     </div>
 
     <script>
-        // --- Логика кнопки "На весь экран" ---
-        const fullscreenToggle = document.getElementById('fullscreenToggle');
-        
-        fullscreenToggle.addEventListener('click', () => {
-            if (!document.fullscreenElement) {
-                document.documentElement.requestFullscreen().catch(err => {
-                    console.error(`Ошибка перевода в полноэкранный режим: ${err.message}`);
-                });
-            } else {
-                document.exitFullscreen();
-            }
-        });
+        let timeoutId;
 
-        // --- Анимация Двоичного Кода (Матрицы) ---
-        const canvas = document.getElementById('matrixCanvas');
-        const ctx = canvas.getContext('2d');
-
-        function resizeCanvas() {
-            canvas.width = window.innerWidth;
-            canvas.height = window.innerHeight;
-        }
-        resizeCanvas();
-        window.addEventListener('resize', resizeCanvas);
-
-        const fontSize = 14;
-        let columns = canvas.width / fontSize;
-        
-        let rainDrops = [];
-        function initDrops() {
-            columns = canvas.width / fontSize;
-            rainDrops = [];
-            for (let i = 0; i < columns; i++) {
-                rainDrops[i] = Math.random() * (canvas.height / fontSize);
-            }
-        }
-        initDrops();
-        window.addEventListener('resize', initDrops);
-
-        function drawMatrix() {
-            ctx.clearRect(0, 0, canvas.width, canvas.height);
-
-            const matrixColor = getComputedStyle(document.documentElement).getPropertyValue('--matrix-color').trim();
-            ctx.fillStyle = matrixColor;
-            ctx.font = fontSize + 'px monospace';
-
-            for (let i = 0; i < rainDrops.length; i++) {
-                const text = Math.random() > 0.5 ? '1' : '0';
-                const x = i * fontSize;
-                const y = rainDrops[i] * fontSize;
-
-                ctx.fillText(text, x, y);
-
-                if (y > canvas.height) {
-                    rainDrops[i] = 0;
-                }
-                rainDrops[i] += 0.5;
-            }
-        }
-        setInterval(drawMatrix, 50);
-
-        // --- Интерактивная логика страниц ---
-        const mainCard = document.getElementById('mainCard');
-        mainCard.addEventListener('click', () => {
-            if (!mainCard.classList.contains('animating-border')) {
-                mainCard.classList.add('animating-border');
-                setTimeout(() => {
-                    mainCard.classList.remove('animating-border');
-                }, 4000);
-            }
-        });
-
-        const copyBtn = document.getElementById('copyBtn');
-        const toast = document.getElementById('toastNotification');
-        const textToCopy = "happ://crypt5/fzvdaItDr37YTJEpwCURCoR917Hen62cgCsL3bOew14x6KoJ6M5fbZOF4LU9sUaM4N8JCnpkT22alRyLF8/q6ATGfpSMoXRSMZlKINwbNAAzgOYuL+mPrHDwDs7bQ80FthONugOI8wIbiBLpVEcP2ZrvpAUhI1aPF2x+ve9QZG/xrMmemYAufuyhgNDxqyNuERrk+0Xq29A=vuT6hOy3LqlDxraybhAkdpW5Lp9izVrw/xynr/uXTNJb4uz7RboibbTd/7xoxxD/KrHslNsKij5mu6HOTYDR0rhRdnKCHqsiga+Ht4GiewvGGw33fsMGcYwnUHpGdPw9rNk1oDWGWCdLmkh3/T1AMDDvlFKiH90rdVGA4H1cINFTQlGU6f89MW9a4boJdZJuSOO3LgPvgGU2mNQ0ncsj86Lb7uFAJXQW4Zkw0RF9f6kNtlnQewdNhyBDe7lU8Rxmhh1c6OUjohgDalLBphdyZ86j4fodm/RGGc16WMpiYkBYwF14K6m+6z8DNmyC8hWGSL/8vXM/r0YUgVrVwvNRJ6kUaYvgBH+a3fWbmdahHnSLyjQiEZWc5rLy6IKQLnqaCS2ygDYEby4ZD86Mb1HIpCs6Hk0gBDbXbtVOnv9qaQqifN3/7W+XiasvSKAyngmgugRzHihkrW/Ye3m5Kv0yI8trRRbWEP6IuAstzLQpvl9LL3HOTPu0rQpgc26bLu8x1korQudfnkoH8DvBzGmav5aqX9LU1EcnWXBAXJ3D9s179lZ8hu1BncE2yCoijteLp91atWCR5K8zmxQonNcXOc/Srlq05BTkojAZwxpvf2NX7yXJ75hsM9kyArQP2ASK3GFKIpk4vZGU39ljREacb80RQTIplCdAue2YGoV0fow=ff";
-        let toastTimeout;
-
-        copyBtn.addEventListener('click', (e) => {
-            e.stopPropagation(); 
+        // Универсальная функция копирования текста и показа уведомления
+        function handleCopy(textToCopy, alertIdToShow) {
             navigator.clipboard.writeText(textToCopy).then(() => {
-                copyBtn.textContent = 'Скопировано ✅';
-                setTimeout(() => {
-                    copyBtn.textContent = 'Скопировать';
-                }, 2000);
+                // Сбрасываем старый таймер, если он был активен
+                clearTimeout(timeoutId);
 
-                toast.classList.add('show');
-                clearTimeout(toastTimeout);
-                toastTimeout = setTimeout(() => {
-                    toast.classList.remove('show');
+                // Прячем абсолютно все уведомления
+                document.querySelectorAll('.alert-box').forEach(alert => {
+                    alert.style.display = 'none';
+                    alert.style.opacity = '0';
+                });
+                
+                // Включаем и плавно показываем нужное уведомление
+                const alertBox = document.getElementById(alertIdToShow);
+                alertBox.style.display = 'block';
+                setTimeout(() => {
+                    alertBox.style.opacity = '1';
+                }, 10);
+
+                // Автоматически скрываем плавно через 4 секунды
+                timeoutId = setTimeout(() => {
+                    alertBox.style.opacity = '0';
+                    setTimeout(() => {
+                        alertBox.style.display = 'none';
+                    }, 300); // время завершения CSS transition
                 }, 4000);
 
             }).catch(err => {
                 console.error('Ошибка при копировании: ', err);
             });
+        }
+
+        // Первая кнопка копирует "привет" и показывает окно для Happ
+        document.getElementById('btn-happ').addEventListener('click', () => {
+            handleCopy('привет', 'alert-happ');
         });
 
-        // Логика переключения тем с сохранением состояния
-        const themeToggle = document.getElementById('themeToggle');
-        const htmlElement = document.documentElement;
-
-        themeToggle.addEventListener('click', () => {
-            const currentTheme = htmlElement.getAttribute('data-theme');
-            if (currentTheme === 'light') {
-                htmlElement.removeAttribute('data-theme');
-                localStorage.setItem('theme', 'dark');
-            } else {
-                htmlElement.setAttribute('data-theme', 'light');
-                localStorage.setItem('theme', 'light');
-            }
+        // Вторая кнопка копирует "67" и показывает окно для Incy
+        document.getElementById('btn-incy').addEventListener('click', () => {
+            handleCopy('привет', 'alert-incy');
         });
     </script>
+
 </body>
 </html>
