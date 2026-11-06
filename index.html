@@ -351,9 +351,8 @@
 
         <main class="fade-item delay-2">
             <div class="card" id="mainCard">
-                <h2>ваша подписка</h2>
-                <span class="arrow">⬇</span>
-                <button class="copy-btn" id="copyBtn">скопировать</button>
+                <h2>Ваша подписка ⬇</h2>
+                <button class="copy-btn" id="copyBtn">Скопировать</button>
             </div>
         </main>
 
@@ -398,9 +397,9 @@
         copyBtn.addEventListener('click', (e) => {
             e.stopPropagation(); 
             navigator.clipboard.writeText(textToCopy).then(() => {
-                copyBtn.textContent = 'скопировано';
+                copyBtn.textContent = 'Скопировано ✅';
                 setTimeout(() => {
-                    copyBtn.textContent = 'скопировать';
+                    copyBtn.textContent = 'Скопировать';
                 }, 2000);
 
                 toast.classList.add('show');
